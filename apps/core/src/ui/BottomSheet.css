@@ -1,0 +1,313 @@
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(12, 12, 20, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  color: white;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  touch-action: none;
+}
+
+.bottom-sheet.closed {
+  transform: translateY(calc(100% - 56px));
+}
+
+/* Drag Handle - larger touch target */
+.sheet-handle {
+  width: 100%;
+  min-height: 56px;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.handle-bar {
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.sheet-handle:active .handle-bar {
+  width: 50px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.sheet-content {
+  padding: 0 20px 32px 20px;
+  overflow-y: auto;
+  flex: 1;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mode Switcher - larger touch targets */
+.mode-switcher {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  border-radius: 14px;
+}
+
+.mode-switcher button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 12px 16px;
+  min-height: 44px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mode-switcher button.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Node List */
+.node-list h3 {
+  margin: 0 0 12px 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1.5px;
+}
+
+.empty-state {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 24px;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  min-height: 52px;
+  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.list-item:hover,
+.list-item:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+  flex-shrink: 0;
+}
+
+.list-item span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.list-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.list-item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.list-item-preview {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Node Details */
+.node-details {
+  animation: slideUp 0.25s ease-out;
+}
+
+.node-details h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.node-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: rgba(100, 200, 255, 0.5);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+
+.node-notes {
+  margin-bottom: 16px;
+}
+
+.node-notes label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.node-notes textarea {
+  width: 100%;
+  min-height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: none;
+  transition: all 0.2s;
+}
+
+.node-notes textarea:focus {
+  outline: none;
+  border-color: rgba(100, 200, 255, 0.4);
+}
+
+/* Actions */
+.node-details-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.node-details-actions button {
+  flex: 1;
+  padding: 14px;
+  min-height: 48px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.node-details-actions button:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.delete-btn {
+  background: rgba(255, 60, 60, 0.1) !important;
+  border-color: rgba(255, 60, 60, 0.2) !important;
+  color: #ff5555 !important;
+}
+
+/* Data Actions */
+.data-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  min-height: 48px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.action-btn:active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.action-btn svg {
+  opacity: 0.7;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .bottom-sheet {
+    max-height: 75vh;
+  }
+  
+  .sheet-content {
+    padding: 0 16px 24px 16px;
+  }
+  
+  .node-details h2 {
+    font-size: 1.25rem;
+  }
+}

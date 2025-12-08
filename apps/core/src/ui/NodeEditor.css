@@ -1,0 +1,146 @@
+.node-editor {
+  animation: slideUp 0.2s ease-out;
+}
+
+.editor-title {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 0 0 12px 0;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.editor-title:focus {
+  border-color: rgba(100, 200, 255, 0.5);
+}
+
+.editor-title::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.editor-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 16px;
+}
+
+.saved-badge {
+  color: #4ade80;
+  font-weight: 500;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.editor-content {
+  width: 100%;
+  min-height: 150px;
+  max-height: 40vh;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.editor-content:focus {
+  border-color: rgba(100, 200, 255, 0.4);
+}
+
+.editor-content::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.editor-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.editor-actions button {
+  flex: 1;
+  padding: 12px 16px;
+  min-height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 100%);
+  color: white;
+  box-shadow: 0 2px 12px rgba(14, 165, 233, 0.3);
+}
+
+.btn-save:active {
+  transform: scale(0.98);
+}
+
+.btn-close {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-delete {
+  background: rgba(255, 60, 60, 0.1);
+  color: #ff5555;
+  border: 1px solid rgba(255, 60, 60, 0.2);
+}
+
+.editor-hint {
+  margin-top: 12px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+}
+
+.editor-hint kbd {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: inherit;
+  margin: 0 2px;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .editor-title {
+    font-size: 1.2rem;
+  }
+  
+  .editor-content {
+    min-height: 120px;
+  }
+  
+  .editor-hint {
+    display: none;
+  }
+}
