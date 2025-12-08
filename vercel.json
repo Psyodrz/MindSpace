@@ -3,5 +3,10 @@
   "framework": "vite",
   "installCommand": "cd apps/landing && npm install",
   "buildCommand": "cd apps/landing && npm run build",
-  "outputDirectory": "apps/landing/dist"
+  "outputDirectory": "apps/landing/dist",
+  "build": {
+    "env": {
+      "NODE_VERSION": "20"
+    }
+  }
 }
