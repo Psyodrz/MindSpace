@@ -63,3 +63,4 @@ next-env.d.ts
 
 ## Package lock files (optional - uncomment if you want to ignore)
 # package-lock.json
+.env*.local
