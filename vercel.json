@@ -3,7 +3,5 @@
   "framework": null,
   "installCommand": "cd apps/landing && npm install",
   "buildCommand": "cd apps/landing && npm run build",
-  "outputDirectory": "apps/landing/dist",
-  "functions": {},
-  "crons": []
+  "outputDirectory": "apps/landing/dist"
 }
