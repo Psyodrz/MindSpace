@@ -3,7 +3,36 @@ import { useUpdateStore } from '../store/useUpdateStore';
 import './UpdateDialog.css';
 
 export const UpdateDialog: React.FC = () => {
-  const { hasUpdate, latestVersion, changelog, updateAvailable, resetUpdate } = useUpdateStore();
+  const { 
+    hasUpdate, 
+    latestVersion, 
+    changelog, 
+    updateAvailable, 
+    showSuccess,
+    resetUpdate,
+    dismissSuccess
+  } = useUpdateStore();
+
+  // Show Success Message (High Priority)
+  if (showSuccess) {
+    return (
+      <div className="update-overlay">
+        <div className="update-dialog">
+          <div className="update-header">
+            <h3>Update Complete 🎉</h3>
+          </div>
+          <div className="update-content">
+            <p>You are now using the latest version of MindSpace.</p>
+          </div>
+          <div className="update-actions">
+            <button className="btn-primary" onClick={dismissSuccess}>
+              Awesome!
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasUpdate) return null;
 

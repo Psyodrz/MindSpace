@@ -5,6 +5,7 @@ import { CapacitorUpdater } from '@capgo/capacitor-updater';
 interface UpdateState {
   hasUpdate: boolean;
   updateAvailable: boolean; // True if update is downloaded and ready to verify/set
+  showSuccess: boolean; // True if we just updated
   latestVersion: string | null;
   changelog: string | null;
   downloadProgress: number | null;
@@ -13,6 +14,7 @@ interface UpdateState {
   initialize: () => void;
   checkForUpdate: () => Promise<void>;
   downloadAndInstall: () => Promise<void>;
+  dismissSuccess: () => void;
   resetUpdate: () => void;
 }
 
@@ -32,18 +34,28 @@ const isNewer = (v1: string, v2: string): boolean => {
 export const useUpdateStore = create<UpdateState>((set, get) => ({
   hasUpdate: false,
   updateAvailable: false,
+  showSuccess: false,
   latestVersion: null,
   changelog: null,
   downloadProgress: null,
   isChecking: false,
 
   initialize: () => {
-    // Notify native side that the app has loaded successfully.
-    // This completes the update definition and prevents rollback.
+    // 1. Notify native side
     CapacitorUpdater.notifyAppReady();
     
-    // Check for updates on load
-    get().checkForUpdate();
+    // 2. Check if we just updated
+    const savedVersion = localStorage.getItem('app_version');
+    if (savedVersion && savedVersion !== CURRENT_VERSION) {
+      set({ showSuccess: true });
+    }
+    // Update local storage to current
+    localStorage.setItem('app_version', CURRENT_VERSION);
+    
+    // 3. Check for updates with a delay to prevent startup freeze
+    setTimeout(() => {
+        get().checkForUpdate();
+    }, 3000);
   },
 
   checkForUpdate: async () => {
@@ -63,8 +75,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
                 changelog: data.changelog
             });
             
-            // Auto-trigger download if configured for silent update
-            // We'll call downloadAndInstall immediately since user asked for "automatic"
+            // Auto-trigger download
             if (data.zipUrl) {
                 get().downloadAndInstall();
             }
@@ -84,9 +95,6 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
      if (!latestVersion) return;
 
      try {
-       // We fetch version.json again to get the zip URL, or we could store it.
-       // Let's assume zipUrl is constructed or passed.
-       // The version.json structure should preferably have the full zip URL.
        const UPDATE_URL = 'https://mindspace-app-pi.vercel.app/version.json';
        const response = await fetch(UPDATE_URL);
        const data = await response.json();
@@ -94,20 +102,12 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
        if (data.zipUrl) {
            const zipUrl = new URL(data.zipUrl, UPDATE_URL).toString();
            
-           // Download and Set the bundle
            const version = await CapacitorUpdater.download({
                url: zipUrl,
                version: latestVersion,
            });
            
            console.log('Update downloaded:', version);
-           
-           // Set the update.
-           // Since resetWhenUpdate is false, this will apply on next app restart,
-           // OR we can force it immediately if we want.
-           // User asked for "automatically download and apply".
-           // Usually applying immediately might disrupt the user, so "next launch" is true silent.
-           // However, let's just set it so it's ready.
            await CapacitorUpdater.set({ id: latestVersion });
            
            set({ updateAvailable: true, downloadProgress: 100 });
@@ -116,6 +116,8 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
          console.error('Failed to download update:', e);
      }
   },
+
+  dismissSuccess: () => set({ showSuccess: false }),
 
   resetUpdate: () => set({ hasUpdate: false, latestVersion: null })
 }));
