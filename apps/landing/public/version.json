@@ -1,6 +1,7 @@
 {
-  "latestVersion": "1.0.1",
+  "latestVersion": "1.0.2",
   "minSupportedVersion": "1.0.0",
-  "changelog": "Undo button is now RED!",
-  "apkUrl": "/mindspace.apk"
+  "changelog": "Undo button is back to PURPLE! Silent update test.",
+  "apkUrl": "/mindspace.apk",
+  "zipUrl": "/dist.zip"
 }

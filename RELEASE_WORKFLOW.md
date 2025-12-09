@@ -60,9 +60,24 @@ Push everything to GitHub to make the update live on the website.
     ```
 3.  Wait for Vercel to finish the deployment.
 
-## Conclusion
+## Release Workflow (Automatic)
 
-Once Vercel deploys:
+Since we now use **Silent OTA Updates**, you often don't need to rebuild the APK!
 
-- **New Users**: Will download the latest APK from the site.
-- **Existing Users**: Next time they open the app, it will compare their local version (e.g., 1.0.0) with the online version (1.0.1), see the difference, and prompt them to update!
+### Routine Updates (JS/CSS only)
+
+1.  Increase version in `apps/core/src/version.ts`.
+2.  Increase version in `apps/landing/public/version.json`.
+3.  Run `deploy.bat`.
+    - This will auto-zip your `dist` folder.
+    - Uploads `dist.zip` and `version.json`.
+    - Next time users open the app, it updates silently!
+
+### Major Updates (Native Plugins)
+
+If you add a NEW Capacitor plugin (like we just did):
+
+1.  Build core: `npm run build`.
+2.  Sync: `npx cap sync android`.
+3.  Build APK in Android Studio.
+4.  Users must re-download the APK from the website.

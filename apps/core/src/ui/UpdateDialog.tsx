@@ -3,26 +3,28 @@ import { useUpdateStore } from '../store/useUpdateStore';
 import './UpdateDialog.css';
 
 export const UpdateDialog: React.FC = () => {
-  const { hasUpdate, latestVersion, changelog, apkUrl, resetUpdate } = useUpdateStore();
+  const { hasUpdate, latestVersion, changelog, updateAvailable, resetUpdate } = useUpdateStore();
 
   if (!hasUpdate) return null;
 
-  const handleDownload = () => {
-    if (apkUrl) {
-      window.open(apkUrl, '_blank');
-    }
+  const handleRestart = () => {
+    window.location.reload();
   };
 
   return (
     <div className="update-overlay">
       <div className="update-dialog">
         <div className="update-header">
-          <h3>Update Available 🚀</h3>
+          <h3>{updateAvailable ? 'Update Ready 🚀' : 'Downloading...'}</h3>
           <span className="version-badge">{latestVersion}</span>
         </div>
         
         <div className="update-content">
-          <p>A new version of MindSpace is available!</p>
+          <p>
+            {updateAvailable 
+              ? 'A new version has been downloaded. Restart to apply.' 
+              : 'Downloading the latest version in the background...'}
+          </p>
           
           {changelog && (
             <div className="changelog-box">
@@ -34,11 +36,14 @@ export const UpdateDialog: React.FC = () => {
         
         <div className="update-actions">
           <button className="btn-secondary" onClick={resetUpdate}>
-            Later
+            {updateAvailable ? 'Later' : 'Hide'}
           </button>
-          <button className="btn-primary" onClick={handleDownload}>
-            Download Update
-          </button>
+          
+          {updateAvailable && (
+            <button className="btn-primary" onClick={handleRestart}>
+              Restart Now
+            </button>
+          )}
         </div>
       </div>
     </div>

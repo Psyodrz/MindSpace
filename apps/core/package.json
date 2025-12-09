@@ -13,6 +13,7 @@
     "@capacitor/android": "^7.4.4",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
+    "@capgo/capacitor-updater": "^7.33.4",
     "@mindspace/galaxy": "*",
     "@react-three/drei": "^9.108.0",
     "@react-three/fiber": "^8.16.8",
