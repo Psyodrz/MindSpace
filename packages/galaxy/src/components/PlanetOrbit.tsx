@@ -14,14 +14,13 @@ interface PlanetOrbitProps {
 
 export const PlanetOrbit: React.FC<PlanetOrbitProps> = ({
   planet,
-  theme,
   showOrbitLine = true,
   children
 }) => {
   const orbitGroupRef = useRef<THREE.Group>(null);
   const angleRef = useRef(Math.random() * Math.PI * 2); // Random start position
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!orbitGroupRef.current) return;
 
     // Update orbit angle
@@ -42,7 +41,7 @@ export const PlanetOrbit: React.FC<PlanetOrbitProps> = ({
   return (
     <group rotation={[planet.orbit.inclination * (Math.PI / 180), 0, 0]}>
       {/* Orbit path visualization */}
-      {showOrbitLine && <OrbitPath planet={planet} theme={theme} />}
+      {showOrbitLine && <OrbitPath planet={planet} />}
       
       {/* Orbiting group containing planet and its moons */}
       <group ref={orbitGroupRef}>

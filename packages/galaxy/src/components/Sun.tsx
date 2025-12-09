@@ -29,7 +29,7 @@ export const Sun: React.FC<SunProps> = ({ color = '#ffaa55', intensity = 1.5 }) 
   const texture = useTexture('/sun.jpg');
   const meshRef = useRef<THREE.Mesh>(null);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y -= delta * 0.6; // Faster rotation
     }

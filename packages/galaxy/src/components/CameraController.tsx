@@ -5,7 +5,7 @@ interface CameraControllerProps {
   fullControl?: boolean;
 }
 
-export const CameraController = forwardRef<CameraControls, CameraControllerProps>(({ fullControl = true }, ref) => {
+export const CameraController = forwardRef<CameraControls, CameraControllerProps>((_, ref) => {
   return (
     <CameraControls 
       ref={ref}

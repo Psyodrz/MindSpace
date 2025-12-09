@@ -278,10 +278,10 @@ html, body, #root {
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: rgba(138, 43, 226, 0.2);
-  border: 1px solid rgba(138, 43, 226, 0.4);
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid rgba(255, 68, 68, 0.4);
   border-radius: 20px;
-  color: #e0e0e0;
+  color: #ffcccc;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -292,7 +292,7 @@ html, body, #root {
 }
 
 .undo-btn:hover {
-  background: rgba(138, 43, 226, 0.35);
+  background: rgba(255, 68, 68, 0.35);
   transform: scale(1.05);
 }
 

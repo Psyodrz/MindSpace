@@ -2,15 +2,15 @@ import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { Line } from '@react-three/drei';
 import { type PlanetCategory } from '../solarSystem';
-import { type ThemeConfig, THEMES } from '../themes';
+import { type ThemeConfig } from '../themes';
 
 interface OrbitPathProps {
   planet: PlanetCategory;
   theme?: ThemeConfig;
 }
 
-export const OrbitPath: React.FC<OrbitPathProps> = ({ planet, theme }) => {
-  const themeConfig = theme || THEMES['deep-space'];
+export const OrbitPath: React.FC<OrbitPathProps> = ({ planet }) => {
+
 
   const points = useMemo(() => {
     const pts: THREE.Vector3[] = [];

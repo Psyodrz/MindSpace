@@ -1,6 +1,6 @@
 {
-  "latestVersion": "1.0.0",
+  "latestVersion": "1.0.1",
   "minSupportedVersion": "1.0.0",
-  "changelog": "Initial public build of MindSpace. Welcome to your personal universe of ideas!",
+  "changelog": "Undo button is now RED!",
   "apkUrl": "/mindspace.apk"
 }

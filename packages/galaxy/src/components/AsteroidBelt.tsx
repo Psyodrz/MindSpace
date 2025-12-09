@@ -71,7 +71,7 @@ export const AsteroidBelt: React.FC = () => {
   // Angle refs for passing asteroids
   const passingAngles = useRef<number[]>(passingAsteroids.map(a => a.angle));
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     // Slow rotation for main belt
     if (beltRef.current) {
       beltRef.current.rotation.y += delta * 0.015;

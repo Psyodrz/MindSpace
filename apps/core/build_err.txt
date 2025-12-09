@@ -1,0 +1,16 @@
+
+> mindspace-core@0.1.0 build
+> tsc -b && vite build
+
+../../packages/galaxy/src/components/CameraController.tsx(8,84): error TS6133: 'fullControl' is declared but its value is never read.
+../../packages/galaxy/src/components/GalaxyErrorBoundary.tsx(1,21): error TS1484: 'ErrorInfo' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+../../packages/galaxy/src/components/GalaxyErrorBoundary.tsx(1,32): error TS1484: 'ReactNode' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+../../packages/galaxy/src/components/OrbitPath.tsx(12,63): error TS6133: 'theme' is declared but its value is never read.
+../../packages/galaxy/src/components/PlanetOrbit.tsx(24,13): error TS6133: 'state' is declared but its value is never read.
+npm error Lifecycle script `build` failed with error:
+npm error code 2
+npm error path C:\Users\Aditya\OneDrive\Desktop\Projects\Mindspace\apps\core
+npm error workspace mindspace-core@0.1.0
+npm error location C:\Users\Aditya\OneDrive\Desktop\Projects\Mindspace\apps\core
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc -b && vite build

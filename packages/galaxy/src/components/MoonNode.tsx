@@ -16,9 +16,7 @@ interface MoonNodeProps {
 }
 
 export const MoonNode: React.FC<MoonNodeProps> = ({
-  id,
   title,
-  color,
   moonOrbit,
   theme,
   selected,
@@ -30,7 +28,7 @@ export const MoonNode: React.FC<MoonNodeProps> = ({
   const angleRef = useRef(moonOrbit.angle);
   const texture = useTexture('/moon.jpg');
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!meshRef.current) return;
 
     // Orbit around parent planet

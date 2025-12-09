@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useEffect } from 'react';
+import React, { Suspense, useRef } from 'react';
 import * as THREE from 'three';
 import { useTexture, Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -101,7 +101,7 @@ const TexturedPlanetSphere: React.FC<{
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(textureUrl);
   
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.3;
     }
@@ -146,7 +146,7 @@ const OrbitingPlanet: React.FC<{
   const orbitSpeed = node.orbitSpeed || 1;
   const planetSize = node.planetSize || 2;
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     // Update orbit angle
     angleRef.current += delta * orbitSpeed * 0.1;
     

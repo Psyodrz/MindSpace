@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, Suspense } from 'react';
-import { useFrame } from '@react-three/fiber';
+
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
 import { GalaxyErrorBoundary } from './GalaxyErrorBoundary';
@@ -97,9 +97,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
     return mat;
   }, [color, themeConfig, opacity]);
 
-  useFrame((state, delta) => {
-    // Rotation is handled by StarNode now via theme.motion.rotationSpeed
-  });
+
 
   const interactionProps = { onClick, onPointerDown, onPointerUp, onPointerMove, onPointerOver, onPointerOut };
 
