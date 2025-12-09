@@ -1,5 +1,7 @@
 import { useStore } from '../store/useStore';
 import { THEMES, type ThemeId } from '@mindspace/galaxy';
+import { useUpdateStore } from '../store/useUpdateStore';
+import { CURRENT_VERSION } from '../version';
 import './SettingsPanel.css';
 
 interface SettingsPanelProps {
@@ -11,10 +13,18 @@ const themeList = Object.values(THEMES);
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
   const { resetData, theme, setTheme } = useStore();
+  const { checkForUpdate, isChecking } = useUpdateStore();
 
   const handleReset = async () => {
     await resetData();
     onClose();
+  };
+  
+  const handleCheckUpdate = async () => {
+    await checkForUpdate();
+    if (!useUpdateStore.getState().hasUpdate) {
+        alert('You are on the latest version!');
+    }
   };
   
   const currentTheme = THEMES[theme as ThemeId];
@@ -71,6 +81,20 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
             <p><strong>MindSpace</strong></p>
             <p className="version">Version 1.0.0</p>
             <p className="tagline">Your ideas, your universe.</p>
+          </div>
+        </div>
+
+        {/* App Info */}
+        <div className="settings-section">
+          <h3>App Info</h3>
+          <div className="about-content">
+            <p><strong>MindSpace</strong></p>
+            <p className="version">Version {CURRENT_VERSION}</p>
+            <p className="tagline">Your ideas, your universe.</p>
+            
+            <button className="reset-btn" style={{ marginTop: '15px', background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: 'var(--theme-text)' }} onClick={handleCheckUpdate}>
+              {isChecking ? 'Checking...' : 'Check for Updates'}
+            </button>
           </div>
         </div>
 

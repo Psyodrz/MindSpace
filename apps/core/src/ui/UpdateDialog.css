@@ -1,0 +1,114 @@
+.update-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.update-dialog {
+  background: var(--theme-bg, #1e1e1e);
+  border: 1px solid var(--theme-accent, rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
+  width: 90%;
+  max-width: 360px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.3s ease-out;
+}
+
+.update-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.update-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--theme-text, #fff);
+}
+
+.version-badge {
+  background: var(--theme-accent, #646cff);
+  color: #000;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.update-content p {
+  color: var(--theme-text, #ddd);
+  opacity: 0.9;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.changelog-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.changelog-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  color: var(--theme-text, #fff);
+  opacity: 0.8;
+}
+
+.changelog-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--theme-text, #ccc);
+  opacity: 0.8;
+}
+
+.update-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.update-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.update-actions button:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--theme-text, #fff);
+}
+
+.btn-primary {
+  background: var(--theme-accent, #646cff);
+  color: #000;
+  box-shadow: 0 0 15px var(--theme-accent-glow, rgba(100, 108, 255, 0.4));
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

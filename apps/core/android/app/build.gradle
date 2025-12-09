@@ -7,8 +7,11 @@ android {
         applicationId "com.mindspace.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        // MANUAL UPDATE REQUIRED:
+        // 1. Increment versionCode by 1 for every new release/build.
+        // 2. Update versionName to the new semantic version (e.g., "1.0.1").
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

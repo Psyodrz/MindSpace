@@ -19,6 +19,8 @@ import { EmptyState } from './ui/EmptyState';
 import { SettingsPanel } from './ui/SettingsPanel';
 import { ContextMenu } from './ui/ContextMenu';
 import { NavigationCarousel } from './ui/NavigationCarousel';
+import { UpdateDialog } from './ui/UpdateDialog';
+import { useUpdateStore } from './store/useUpdateStore';
 import './App.css';
 
 function App() {
@@ -69,18 +71,13 @@ function App() {
       root.style.setProperty('--theme-text', '#ffffff'); // Default text color
       root.style.setProperty('--theme-accent', themeConfig.accentColor);
       root.style.setProperty('--theme-accent-glow', themeConfig.accentGlow);
-      
-      // Calculate surface color (slightly lighter than bg)
-      // For now, we'll just use a transparent white overlay approach in CSS, 
-      // or we can set a specific surface color if available in theme config.
-      // Let's use a generic surface color or just letting simple opacity changes handle it.
-      // But for better control, let's define a surface color.
-      // Since we don't have a 'surface' in theme config, we might want to add it or derive it.
-      // For now, let's assume specific hardcoded logic or just rely on transparency.
-      
-      // Actually, let's just expose the main ones for now.
     }
   }, [theme, themeConfig]);
+
+  // Check for updates on startup
+  useEffect(() => {
+    useUpdateStore.getState().checkForUpdate();
+  }, []);
 
   // Camera Animation Logic
   useEffect(() => {
@@ -389,6 +386,8 @@ function App() {
       {!isEmpty && <TutorialHint />}
       {!isEmpty && <NavigationCarousel />}
       {!isEmpty && <BottomSheet />}
+      
+      <UpdateDialog />
       
       {/* Context Menu */}
       {contextMenu && (
