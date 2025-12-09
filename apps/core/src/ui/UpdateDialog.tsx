@@ -8,9 +8,11 @@ export const UpdateDialog: React.FC = () => {
     latestVersion, 
     changelog, 
     updateAvailable, 
+    downloadProgress,
     showSuccess,
     resetUpdate,
-    dismissSuccess
+    dismissSuccess,
+    downloadAndInstall
   } = useUpdateStore();
 
   // Show Success Message (High Priority)
@@ -40,11 +42,15 @@ export const UpdateDialog: React.FC = () => {
     window.location.reload();
   };
 
+  const isDownloading = downloadProgress !== null && downloadProgress < 100;
+
   return (
     <div className="update-overlay">
       <div className="update-dialog">
         <div className="update-header">
-          <h3>{updateAvailable ? 'Update Ready 🚀' : 'Downloading...'}</h3>
+          <h3>
+             {updateAvailable ? 'Update Ready 🚀' : isDownloading ? 'Downloading...' : 'Update Available'}
+          </h3>
           <span className="version-badge">{latestVersion}</span>
         </div>
         
@@ -52,7 +58,9 @@ export const UpdateDialog: React.FC = () => {
           <p>
             {updateAvailable 
               ? 'A new version has been downloaded. Restart to apply.' 
-              : 'Downloading the latest version in the background...'}
+              : isDownloading 
+                ? 'Downloading update in background...'
+                : 'A new version of MindSpace is available to download.'}
           </p>
           
           {changelog && (
@@ -68,9 +76,13 @@ export const UpdateDialog: React.FC = () => {
             {updateAvailable ? 'Later' : 'Hide'}
           </button>
           
-          {updateAvailable && (
+          {updateAvailable ? (
             <button className="btn-primary" onClick={handleRestart}>
               Restart Now
+            </button>
+          ) : !isDownloading && (
+             <button className="btn-primary" onClick={downloadAndInstall}>
+              Download
             </button>
           )}
         </div>

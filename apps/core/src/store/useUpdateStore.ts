@@ -75,10 +75,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
                 changelog: data.changelog
             });
             
-            // Auto-trigger download
-            if (data.zipUrl) {
-                get().downloadAndInstall();
-            }
+            // Manual update: We wait for user action.
         } else {
             set({ hasUpdate: false });
         }
