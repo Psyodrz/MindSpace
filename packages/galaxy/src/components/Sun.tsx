@@ -20,13 +20,18 @@ const SunShader = {
   `
 };
 
-export const Sun: React.FC = () => {
+interface SunProps {
+  color?: string;
+  intensity?: number;
+}
+
+export const Sun: React.FC<SunProps> = ({ color = '#ffaa55', intensity = 1.5 }) => {
   const texture = useTexture('/sun.jpg');
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y -= delta * 0.05; // Slow rotation
+      meshRef.current.rotation.y -= delta * 0.6; // Faster rotation
     }
   });
 
@@ -43,7 +48,7 @@ export const Sun: React.FC = () => {
   return (
     <group position={[40, 20, -40]}> {/* Distant sun position */}
       {/* Main Light Source (Infinite Reach) */}
-      <pointLight intensity={3.0} color="#ffaa55" distance={0} decay={0} />
+      <pointLight intensity={intensity * 2} color={color} distance={0} decay={0} />
       <ambientLight intensity={0.2} color="#404040" />
 
       {/* Sun Sphere */}

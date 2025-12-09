@@ -1,15 +1,13 @@
 import { useStore } from '../store/useStore';
+import { THEMES, type ThemeId } from '@mindspace/galaxy';
 import './SettingsPanel.css';
 
 interface SettingsPanelProps {
   onClose: () => void;
 }
 
-const THEMES = [
-  { id: 'deep-space', name: 'Deep Space', color: '#8a2be2' },
-  { id: 'nebula', name: 'Nebula', color: '#d946ef' },
-  { id: 'ocean', name: 'Ocean', color: '#06b6d4' },
-] as const;
+// Get themes as array for rendering
+const themeList = Object.values(THEMES);
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
   const { resetData, theme, setTheme } = useStore();
@@ -18,6 +16,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
     await resetData();
     onClose();
   };
+  
+  const currentTheme = THEMES[theme as ThemeId];
 
   return (
     <div className="settings-overlay" onClick={onClose}>
@@ -33,16 +33,18 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
           </button>
         </div>
 
-        {/* Theme Section */}
+        {/* Theme Section - Thinking Modes */}
         <div className="settings-section">
-          <h3>Theme</h3>
+          <h3>Thinking Mode</h3>
+          <p className="theme-description">{currentTheme?.description}</p>
           <div className="theme-options">
-            {THEMES.map((t) => (
+            {themeList.map((t) => (
               <button
                 key={t.id}
                 className={`theme-btn ${theme === t.id ? 'active' : ''}`}
                 onClick={() => setTheme(t.id)}
-                style={{ '--theme-color': t.color } as React.CSSProperties}
+                style={{ '--theme-color': t.accentColor } as React.CSSProperties}
+                title={t.description}
               >
                 <span className="theme-swatch"></span>
                 {t.name}

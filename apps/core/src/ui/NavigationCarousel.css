@@ -1,0 +1,88 @@
+.nav-carousel {
+  position: fixed;
+  bottom: 82px;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.nav-carousel-inner {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  pointer-events: auto;
+}
+
+.nav-carousel-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(30, 30, 45, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item:hover,
+.nav-item:active {
+  background: rgba(50, 50, 70, 0.9);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: rgba(34, 211, 238, 0.2);
+  border-color: rgba(34, 211, 238, 0.4);
+  color: #22d3ee;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-title {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .nav-carousel {
+    bottom: 72px;
+  }
+  
+  .nav-item {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .nav-title {
+    max-width: 80px;
+  }
+}

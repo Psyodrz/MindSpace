@@ -10,7 +10,7 @@ export const CameraController = forwardRef<CameraControls, CameraControllerProps
     <CameraControls 
       ref={ref}
       minDistance={3}
-      maxDistance={150}
+      maxDistance={100}
       dollySpeed={0.5}
       truckSpeed={0.5}
       smoothTime={0.5}

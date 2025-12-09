@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { type MindNode, type NodeId, type SpaceMode, type Vector3Object, generateRandomPosition } from '@mindspace/galaxy';
+import { type MindNode, type NodeId, type SpaceMode, type Vector3Object, type ThemeId, type ViewMode, generateRandomPosition } from '@mindspace/galaxy';
 import { exportToJSON, importFromJSON, clearAllData } from '../utils/storage';
 import { get, set, del } from 'idb-keyval';
 
@@ -12,8 +12,8 @@ interface UndoAction {
   previousPosition?: Vector3Object;  // For move undo
 }
 
-// Theme type
-type AppTheme = 'deep-space' | 'nebula' | 'ocean';
+// Theme type - use ThemeId from galaxy package
+type AppTheme = ThemeId;
 
 interface AppState {
   nodes: Record<NodeId, MindNode>;
@@ -23,6 +23,7 @@ interface AppState {
   linkingNodeId: NodeId | null;  // Node being linked from
   undoHistory: UndoAction[];  // Max 10
   theme: AppTheme;
+  viewMode: ViewMode;
   
   // Actions
   addNode: (title?: string, textureUrl?: string) => void;
@@ -32,6 +33,7 @@ interface AppState {
   setActiveNode: (id: NodeId | null) => void;
   setMode: (mode: SpaceMode) => void;
   setTheme: (theme: AppTheme) => void;
+  setViewMode: (viewMode: ViewMode) => void;
   setHasSeenTutorial: (seen: boolean) => void;
   hydrateTextures: () => void;
   
@@ -62,6 +64,60 @@ const PLANET_TEXTURES = [
   '/neptune.jpg',
   '/uranus.jpg'
 ];
+
+// Default planets configuration (pre-seeded on first load)
+const DEFAULT_PLANETS = [
+  { title: 'Mercury', textureUrl: '/mercury.jpg', orbitRadius: 15, orbitSpeed: 4.8, planetSize: 1.2, content: 'The smallest planet, closest to the Sun.' },
+  { title: 'Venus', textureUrl: '/venus.jpg', orbitRadius: 22, orbitSpeed: 3.5, planetSize: 2, content: 'The hottest planet with thick atmosphere.' },
+  { title: 'Earth', textureUrl: '/earth-day.jpg', orbitRadius: 30, orbitSpeed: 3.0, planetSize: 2, content: 'Our home planet, the blue marble.' },
+  { title: 'Mars', textureUrl: '/mars.jpg', orbitRadius: 40, orbitSpeed: 2.4, planetSize: 1.5, content: 'The red planet, future destination.' },
+  { title: 'Jupiter', textureUrl: '/jupiter.jpg', orbitRadius: 60, orbitSpeed: 1.3, planetSize: 4, content: 'The largest planet, gas giant.' },
+  { title: 'Saturn', textureUrl: '/moon.jpg', orbitRadius: 80, orbitSpeed: 0.97, planetSize: 3.5, content: 'Famous for its beautiful rings.' },
+  { title: 'Uranus', textureUrl: '/uranus.jpg', orbitRadius: 100, orbitSpeed: 0.68, planetSize: 2.8, content: 'The ice giant that rotates on its side.' },
+  { title: 'Neptune', textureUrl: '/neptune.jpg', orbitRadius: 120, orbitSpeed: 0.54, planetSize: 2.6, content: 'The windiest planet in our solar system.' }
+];
+
+// Get next available orbit radius for new planets
+const getNextOrbitRadius = (existingNodes: Record<string, MindNode>): number => {
+  const existingRadii = Object.values(existingNodes)
+    .map(n => n.orbitRadius || 0)
+    .filter(r => r > 0);
+  
+  if (existingRadii.length === 0) return 140;
+  
+  const maxRadius = Math.max(...existingRadii);
+  return maxRadius + 20; // Each new planet 20 units further out
+};
+
+// Create default planet nodes
+const createDefaultPlanets = (): Record<string, MindNode> => {
+  const now = Date.now();
+  const nodes: Record<string, MindNode> = {};
+  
+  DEFAULT_PLANETS.forEach((planet, index) => {
+    const id = `default-planet-${index}`;
+    nodes[id] = {
+      id,
+      title: planet.title,
+      content: planet.content,
+      position: { x: planet.orbitRadius, y: 0, z: 0 },
+      galaxyPosition: { x: (index - 4) * 8, y: 0, z: (index % 2) * 5 },
+      connections: [],
+      createdAt: now,
+      updatedAt: now,
+      color: '#ffffff',
+      textureUrl: planet.textureUrl,
+      orbitRadius: planet.orbitRadius,
+      orbitSpeed: planet.orbitSpeed,
+      orbitAngle: (index / DEFAULT_PLANETS.length) * Math.PI * 2,
+      planetSize: planet.planetSize,
+      isDefaultPlanet: true
+    };
+  });
+  
+  return nodes;
+};
+
 
 const STORAGE_KEY = 'mindspace-storage';
 
@@ -99,6 +155,7 @@ export const useStore = create<AppState>()(
       linkingNodeId: null,
       undoHistory: [],
       theme: 'deep-space' as const,
+      viewMode: 'galaxy' as const,
       
       setTheme: (theme) => {
         set({ theme });
@@ -106,11 +163,20 @@ export const useStore = create<AppState>()(
         document.documentElement.setAttribute('data-theme', theme);
       },
       
+      setViewMode: (viewMode) => {
+        set({ viewMode });
+      },
+      
       addNode: (title = 'New Idea', textureUrl) => set((state) => {
         const id = crypto.randomUUID();
         const position = generateRandomPosition(15);
         const finalTexture = textureUrl || PLANET_TEXTURES[Math.floor(Math.random() * PLANET_TEXTURES.length)];
         const now = Date.now();
+        
+        // Calculate orbital params for new planet
+        const orbitRadius = getNextOrbitRadius(state.nodes);
+        const orbitSpeed = 0.3 + Math.random() * 0.3; // Slow outer orbit
+
         
         const newNode: MindNode = {
           id,
@@ -122,7 +188,13 @@ export const useStore = create<AppState>()(
           createdAt: now,
           updatedAt: now,
           color: '#ffffff',
-          textureUrl: finalTexture
+          textureUrl: finalTexture,
+          // Orbital properties
+          orbitRadius,
+          orbitSpeed,
+          orbitAngle: Math.random() * Math.PI * 2,
+          planetSize: 1.5 + Math.random() * 1.5, // Random size 1.5-3
+          isDefaultPlanet: false
         };
         return { nodes: { ...state.nodes, [id]: newNode }, activeNodeId: id };
       }),
@@ -405,10 +477,44 @@ export const useStore = create<AppState>()(
       partialize: (state) => ({
         nodes: state.nodes,
         mode: state.mode,
-        hasSeenTutorial: state.hasSeenTutorial
+        hasSeenTutorial: state.hasSeenTutorial,
+        theme: state.theme,
+        viewMode: state.viewMode
       }),
       onRehydrateStorage: () => (state) => {
-        state?.hydrateTextures();
+        if (state) {
+          const currentNodes = state.nodes;
+          const defaultPlanets = createDefaultPlanets();
+          
+          // Check if default planets already exist
+          const hasDefaultPlanets = Object.keys(currentNodes).some(id => id.startsWith('default-planet-'));
+          
+          if (!hasDefaultPlanets) {
+            // Merge default planets with existing nodes
+            // Also migrate existing notes to have orbital params
+            const migratedNodes = { ...currentNodes };
+            let nextRadius = 140;
+            
+            Object.keys(migratedNodes).forEach((id, index) => {
+              const node = migratedNodes[id];
+              if (node.orbitRadius === undefined) {
+                migratedNodes[id] = {
+                  ...node,
+                  orbitRadius: nextRadius,
+                  orbitSpeed: 0.3 + Math.random() * 0.3,
+                  orbitAngle: (index / Object.keys(migratedNodes).length) * Math.PI * 2,
+                  planetSize: 2 + Math.random() * 1.5,
+                  isDefaultPlanet: false
+                };
+                nextRadius += 20;
+              }
+            });
+            
+            // Merge: default planets + user notes
+            const mergedNodes = { ...defaultPlanets, ...migratedNodes };
+            useStore.setState({ nodes: mergedNodes });
+          }
+        }
       }
     }
   )

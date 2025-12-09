@@ -2,31 +2,50 @@ import React from 'react';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { Sun } from './Sun';
+import { type ThemeConfig, THEMES } from '../themes';
 
-export const SpaceEnvironment: React.FC = () => {
-  const map = useTexture('/milky-way.jpg');
+interface SpaceEnvironmentProps {
+  theme?: ThemeConfig;
+  hideSun?: boolean;
+}
+
+export const SpaceEnvironment: React.FC<SpaceEnvironmentProps> = ({ theme, hideSun = false }) => {
+  const config = theme || THEMES['deep-space'];
+  
+  // Use theme-specific backgrounds
+  const getBackgroundTexture = () => {
+    if (config.id === 'nebula') return '/nebula-bg.jpg';
+    if (config.id === 'cyberpunk') return '/cyberpunk-bg.jpg';
+    return '/milky-way.jpg';
+  };
+  const map = useTexture(getBackgroundTexture());
 
   return (
     <>
-      <ambientLight intensity={0.6} color="#cccccc" />
-      <Sun />
+      <ambientLight intensity={config.ambientIntensity} color={config.ambientColor} />
+      {!hideSun && <Sun color={config.sunColor} intensity={config.sunIntensity} />}
       
-      {/* Secondary Fill Light (Blueish for space shadow) */}
-      <pointLight position={[-30, -10, 20]} intensity={0.5} color="#4444ff" />
+      {/* Secondary Fill Light */}
+      <pointLight 
+        position={[-30, -10, 20]} 
+        intensity={config.fillLightIntensity} 
+        color={config.fillLightColor} 
+      />
       
-      {/* Background Sphere */}
+      {/* Background Sphere with Space Texture + Color Tint */}
       <mesh>
         <sphereGeometry args={[500, 64, 64]} />
         <meshBasicMaterial 
           map={map} 
+          color={config.backgroundColor === '#000000' ? '#ffffff' : config.backgroundColor}
           side={THREE.BackSide} 
           fog={false} 
           toneMapped={false}
         />
       </mesh>
       
-      {/* Soft Fog for depth of nearby objects only */}
-      <fog attach="fog" args={['#000000', 10, 150]} />
+      {/* Theme-aware Fog */}
+      <fog attach="fog" args={[config.fogColor, config.fogNear, config.fogFar]} />
     </>
   );
 };

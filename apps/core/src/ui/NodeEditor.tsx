@@ -34,6 +34,28 @@ export const NodeEditor: React.FC<NodeEditorProps> = ({ nodeId, onClose }) => {
   
   if (!node) return null;
   
+  // Auto-save when content changes (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (title !== node.title || content !== node.content) {
+        updateNode(nodeId, { title: title.trim() || 'Untitled', content });
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [title, content, nodeId, node.title, node.content, updateNode]);
+  
+  // Save on unmount/blur
+  useEffect(() => {
+    return () => {
+      // Get latest values from refs if available
+      const currentTitle = titleRef.current?.value ?? title;
+      const currentContent = contentRef.current?.value ?? content;
+      if (currentTitle !== node.title || currentContent !== node.content) {
+        updateNode(nodeId, { title: currentTitle.trim() || 'Untitled', content: currentContent });
+      }
+    };
+  }, []);
+  
   const handleSave = () => {
     updateNode(nodeId, { title: title.trim() || 'Untitled', content });
     setSaved(true);

@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
 import { GalaxyErrorBoundary } from './GalaxyErrorBoundary';
+import { type ThemeConfig, THEMES } from '../themes';
 
 // Fixed Fragment Shader for the actual glow intensity usage
 const RealAtmosphereShader = {
@@ -31,9 +32,10 @@ const RealAtmosphereShader = {
 interface PlanetVisualProps {
   color: string;
   textureUrl?: string;
-  opacity?: number; // Added opacity
+  opacity?: number;
   selected?: boolean;
   hovered?: boolean;
+  theme?: ThemeConfig;
   onClick?: (e: any) => void;
   onPointerDown?: (e: any) => void;
   onPointerUp?: (e: any) => void;
@@ -42,33 +44,39 @@ interface PlanetVisualProps {
   onPointerOut?: (e: any) => void;
 }
 
-// Sub-component for Safe Texture Loading
-const TexturedPlanet = React.forwardRef<THREE.Mesh, PlanetVisualProps & { url: string }>(({ url, color, opacity = 1, ...props }, ref) => {
-  const texture = useTexture(url);
-  
-  const material = useMemo(() => new THREE.MeshStandardMaterial({
-    map: texture,
-    roughness: 0.7,
-    metalness: 0.1,
-    transparent: true,
-    opacity: opacity,
-  }), [texture, opacity]);
+// Sub-component for Safe Texture Loading with theme support
+const TexturedPlanet = React.forwardRef<THREE.Mesh, PlanetVisualProps & { url: string }>(
+  ({ url, color, opacity = 1, theme, ...props }, ref) => {
+    const texture = useTexture(url);
+    const themeConfig = theme || THEMES['deep-space'];
+    
+    const material = useMemo(() => new THREE.MeshStandardMaterial({
+      map: texture,
+      roughness: themeConfig.planet.roughness,
+      metalness: themeConfig.planet.metalness,
+      emissive: new THREE.Color(themeConfig.planet.emissiveColor),
+      emissiveIntensity: themeConfig.planet.emissiveIntensity,
+      transparent: true,
+      opacity: opacity,
+    }), [texture, opacity, themeConfig]);
 
-  return (
-    <mesh ref={ref} {...props as any}>
-       <sphereGeometry args={[0.6, 64, 64]} />
-       <primitive object={material} />
-    </mesh>
-  );
-});
+    return (
+      <mesh ref={ref} {...props as any}>
+         <sphereGeometry args={[0.6, 64, 64]} />
+         <primitive object={material} />
+      </mesh>
+    );
+  }
+);
 
 export const PlanetVisual: React.FC<PlanetVisualProps> = ({ 
-  color, textureUrl, opacity = 1, selected, hovered,
+  color, textureUrl, opacity = 1, selected, hovered, theme,
   onClick, onPointerDown, onPointerUp, onPointerMove, onPointerOver, onPointerOut
 }) => {
   const planetRef = useRef<THREE.Mesh>(null);
+  const themeConfig = theme || THEMES['deep-space'];
 
-  // Common Atmosphere Material
+  // Theme-aware Atmosphere Material
   const atmosphereMaterial = useMemo(() => {
     const mat = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.clone(RealAtmosphereShader.uniforms),
@@ -78,21 +86,19 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
       blending: THREE.AdditiveBlending,
       transparent: true,
       depthWrite: false,
-      opacity: opacity // Though shader handles its own alpha, usually we pass uniform or rely on blending
     });
-    // Inject opacity into glow color or uniform if needed, but for AdditiveBlending, 
-    // we scale the color intensity by opacity
-    const baseColor = new THREE.Color(textureUrl ? '#44aaff' : color);
-    mat.uniforms.glowColor.value = baseColor.multiplyScalar(opacity);
+    // Use theme emissive color for glow, or fallback to color
+    const emissiveColor = themeConfig.planet.emissiveColor !== '#000000' 
+      ? themeConfig.planet.emissiveColor 
+      : color;
+    const baseColor = new THREE.Color(emissiveColor);
+    mat.uniforms.glowColor.value = baseColor.multiplyScalar(opacity * (0.5 + themeConfig.planet.emissiveIntensity));
     
     return mat;
-  }, [color, textureUrl, opacity]);
+  }, [color, themeConfig, opacity]);
 
   useFrame((state, delta) => {
-    if (planetRef.current) {
-        // Slow rotation for planet
-        planetRef.current.rotation.y += delta * 0.1;
-    }
+    // Rotation is handled by StarNode now via theme.motion.rotationSpeed
   });
 
   const interactionProps = { onClick, onPointerDown, onPointerUp, onPointerMove, onPointerOver, onPointerOut };
@@ -103,7 +109,13 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
         <GalaxyErrorBoundary fallback={
              <mesh ref={planetRef} {...interactionProps}>
                <sphereGeometry args={[0.6, 64, 64]} />
-               <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
+               <meshStandardMaterial 
+                 color={color} 
+                 roughness={themeConfig.planet.roughness} 
+                 metalness={themeConfig.planet.metalness}
+                 emissive={themeConfig.planet.emissiveColor}
+                 emissiveIntensity={themeConfig.planet.emissiveIntensity}
+               />
              </mesh>
         }>
           <Suspense fallback={null}>
@@ -111,6 +123,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 url={textureUrl} 
                 color={color} 
                 opacity={opacity}
+                theme={themeConfig}
                 {...interactionProps} 
                 ref={planetRef}
             />
@@ -120,16 +133,18 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
         <mesh ref={planetRef} {...interactionProps}>
           <sphereGeometry args={[0.6, 64, 64]} />
           <meshStandardMaterial 
-            color={color} 
-            roughness={0.7} 
-            metalness={0.1}
+            color={themeConfig.planet.baseColor} 
+            roughness={themeConfig.planet.roughness} 
+            metalness={themeConfig.planet.metalness}
+            emissive={themeConfig.planet.emissiveColor}
+            emissiveIntensity={themeConfig.planet.emissiveIntensity}
             transparent={true}
             opacity={opacity}
           />
         </mesh>
       )}
 
-      {/* Atmosphere Glow (Separate mesh to avoid texture conflicts) */}
+      {/* Theme-aware Atmosphere Glow */}
       <mesh scale={[1.2, 1.2, 1.2]}>
         <sphereGeometry args={[0.6, 64, 64]} />
         <primitive object={atmosphereMaterial} />

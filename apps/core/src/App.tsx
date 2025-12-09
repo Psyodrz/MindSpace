@@ -7,7 +7,9 @@ import {
   CameraController, 
   StarNode,
   NodeConnection,
-  OrbitRing
+  OrbitRing,
+  SolarSystemView,
+  getTheme
 } from '@mindspace/galaxy';
 import { useStore } from './store/useStore';
 import { BottomSheet } from './ui/BottomSheet';
@@ -16,6 +18,7 @@ import { LoadingScreen } from './ui/LoadingScreen';
 import { EmptyState } from './ui/EmptyState';
 import { SettingsPanel } from './ui/SettingsPanel';
 import { ContextMenu } from './ui/ContextMenu';
+import { NavigationCarousel } from './ui/NavigationCarousel';
 import './App.css';
 
 function App() {
@@ -33,11 +36,15 @@ function App() {
     undo,
     canUndo,
     mode,
-    theme
+    theme,
+    viewMode,
+    setViewMode
   } = useStore();
   const cameraRef = useRef<CameraControls>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [fabPulse, setFabPulse] = useState(false);
   const longPressTimer = useRef<number | null>(null);
   const lastTapTime = useRef<{ [key: string]: number }>({});
   
@@ -48,10 +55,32 @@ function App() {
   const primaryNodeId = nodeList[0]?.id;
   const isEmpty = nodeList.length === 0;
   
+  // Get current theme config
+  const themeConfig = getTheme(theme);
+  
   // Apply theme on mount/change
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+    
+    // Inject theme colors as CSS variables
+    if (themeConfig) {
+      const root = document.documentElement;
+      root.style.setProperty('--theme-bg', themeConfig.backgroundColor);
+      root.style.setProperty('--theme-text', '#ffffff'); // Default text color
+      root.style.setProperty('--theme-accent', themeConfig.accentColor);
+      root.style.setProperty('--theme-accent-glow', themeConfig.accentGlow);
+      
+      // Calculate surface color (slightly lighter than bg)
+      // For now, we'll just use a transparent white overlay approach in CSS, 
+      // or we can set a specific surface color if available in theme config.
+      // Let's use a generic surface color or just letting simple opacity changes handle it.
+      // But for better control, let's define a surface color.
+      // Since we don't have a 'surface' in theme config, we might want to add it or derive it.
+      // For now, let's assume specific hardcoded logic or just rely on transparency.
+      
+      // Actually, let's just expose the main ones for now.
+    }
+  }, [theme, themeConfig]);
 
   // Camera Animation Logic
   useEffect(() => {
@@ -113,6 +142,21 @@ function App() {
   // Handle creating first planet
   const handleCreateFirst = () => {
     addNode('My First Idea', '/earth-day.jpg');
+    showCreationFeedback();
+  };
+  
+  // Show creation feedback (pulse + toast)
+  const showCreationFeedback = () => {
+    setFabPulse(true);
+    setShowToast(true);
+    setTimeout(() => setFabPulse(false), 300);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+  
+  // Handle adding new planet with feedback
+  const handleAddNode = () => {
+    addNode();
+    showCreationFeedback();
   };
 
   // Long press handlers for context menu
@@ -193,58 +237,87 @@ function App() {
       )}
 
       <Canvas 
-        camera={{ position: [0, 10, 25], fov: 55 }} 
+        camera={{ 
+          position: viewMode === 'solar-system' ? [0, 80, 180] : [0, 10, 25], 
+          fov: viewMode === 'solar-system' ? 60 : 55,
+          far: viewMode === 'solar-system' ? 2000 : 500
+        }} 
         dpr={[1, 1.5]}
         gl={{ 
-          antialias: false,
+          antialias: true,
           powerPreference: 'high-performance'
         }}
       >
         <Suspense fallback={null}>
-          <SpaceEnvironment />
-          <StarField count={3000} />
+          <SpaceEnvironment theme={themeConfig} hideSun={viewMode === 'solar-system'} />
+          <StarField 
+            count={Math.round(3000 * themeConfig.star.density)} 
+            color={themeConfig.star.color} 
+            size={themeConfig.star.size} 
+          />
           <CameraController ref={cameraRef} />
           
-          {/* Orbit Ring for Solar mode */}
-          {mode === 'SOLAR' && primaryNodeId && nodes[primaryNodeId] && (
-            <OrbitRing 
-              center={[
-                nodes[primaryNodeId].position.x, 
-                nodes[primaryNodeId].position.y, 
-                nodes[primaryNodeId].position.z
-              ]} 
+          {/* Solar System View */}
+          {viewMode === 'solar-system' ? (
+            <SolarSystemView
+              nodes={nodeList.map(n => ({
+                id: n.id,
+                title: n.title,
+                textureUrl: n.textureUrl,
+                orbitRadius: n.orbitRadius,
+                orbitSpeed: n.orbitSpeed,
+                orbitAngle: n.orbitAngle,
+                planetSize: n.planetSize
+              }))}
+              selectedNodeId={activeNodeId}
+              theme={themeConfig}
+              onNodeSelect={(id) => setActiveNode(id)}
             />
+          ) : (
+            <>
+              {/* Galaxy View - Orbit Ring for Solar mode */}
+              {mode === 'SOLAR' && primaryNodeId && nodes[primaryNodeId] && (
+                <OrbitRing 
+                  center={[
+                    nodes[primaryNodeId].position.x, 
+                    nodes[primaryNodeId].position.y, 
+                    nodes[primaryNodeId].position.z
+                  ]} 
+                />
+              )}
+              
+              {/* Render Connections */}
+              {connections.map(conn => (
+                <NodeConnection
+                  key={`${conn.from}-${conn.to}`}
+                  start={[conn.startPos.x, conn.startPos.y, conn.startPos.z]}
+                  end={[conn.endPos.x, conn.endPos.y, conn.endPos.z]}
+                />
+              ))}
+              
+              {/* Render User Nodes */}
+              {nodeList.map((node) => (
+                <StarNode 
+                  key={node.id}
+                  id={node.id}
+                  position={[node.position.x, node.position.y, node.position.z]}
+                  label={node.title}
+                  color={node.color}
+                  textureUrl={node.textureUrl}
+                  selected={activeNodeId === node.id}
+                  isPrimary={node.id === primaryNodeId}
+                  hovered={linkingNodeId === node.id}
+                  theme={themeConfig}
+                  onClick={(e) => handleNodeClick(node.id, e)}
+                  onPointerDown={(e) => handlePointerDown(node.id, e)}
+                  onPointerUp={handlePointerUp}
+                  onPositionChange={(id, pos) => {
+                    updateNodePosition(id, { x: pos[0], y: pos[1], z: pos[2] });
+                  }}
+                />
+              ))}
+            </>
           )}
-          
-          {/* Render Connections */}
-          {connections.map(conn => (
-            <NodeConnection
-              key={`${conn.from}-${conn.to}`}
-              start={[conn.startPos.x, conn.startPos.y, conn.startPos.z]}
-              end={[conn.endPos.x, conn.endPos.y, conn.endPos.z]}
-            />
-          ))}
-          
-          {/* Render User Nodes */}
-          {nodeList.map((node) => (
-            <StarNode 
-              key={node.id}
-              id={node.id}
-              position={[node.position.x, node.position.y, node.position.z]}
-              label={node.title}
-              color={node.color}
-              textureUrl={node.textureUrl}
-              selected={activeNodeId === node.id}
-              isPrimary={node.id === primaryNodeId}
-              hovered={linkingNodeId === node.id}
-              onClick={(e) => handleNodeClick(node.id, e)}
-              onPointerDown={(e) => handlePointerDown(node.id, e)}
-              onPointerUp={handlePointerUp}
-              onPositionChange={(id, pos) => {
-                updateNodePosition(id, { x: pos[0], y: pos[1], z: pos[2] });
-              }}
-            />
-          ))}
         </Suspense>
         
         {/* Deselect on bg click */}
@@ -262,9 +335,26 @@ function App() {
         </div>
       )}
       
-      {/* Header */}
+      {/* Header with View Toggle */}
       <div className="ui-header">
         <img src="/logo.png" alt="MindSpace" className="header-logo" />
+        
+        {/* View Mode Toggle */}
+        <div className="view-toggle">
+          <button 
+            className={`view-btn ${viewMode === 'galaxy' ? 'active' : ''}`}
+            onClick={() => setViewMode('galaxy')}
+          >
+            🌌
+          </button>
+          <button 
+            className={`view-btn ${viewMode === 'solar-system' ? 'active' : ''}`}
+            onClick={() => setViewMode('solar-system')}
+          >
+            ☀️
+          </button>
+        </div>
+        
         <button className="settings-btn" onClick={() => setShowSettings(true)}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="3"/>
@@ -283,15 +373,21 @@ function App() {
       
       {/* FAB - only show when not empty */}
       {!isEmpty && (
-        <button className="fab" onClick={() => addNode()}>
+        <button className={`fab ${fabPulse ? 'pulse' : ''}`} onClick={handleAddNode}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
         </button>
       )}
+      
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="toast">Planet created ✓</div>
+      )}
 
       {!isEmpty && <TutorialHint />}
+      {!isEmpty && <NavigationCarousel />}
       {!isEmpty && <BottomSheet />}
       
       {/* Context Menu */}

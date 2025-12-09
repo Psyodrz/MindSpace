@@ -1,4 +1,6 @@
 export * from './types';
+export * from './themes';
+export * from './solarSystem';
 export * from './core/math';
 export * from './components/StarField';
 export * from './components/StarNode';
@@ -6,4 +8,9 @@ export * from './components/SpaceEnvironment';
 export * from './components/CameraController';
 export * from './components/NodeConnection';
 export * from './components/OrbitRing';
-export const GALAXY_VERSION = "1.2.0";
+export * from './components/SolarSystemView';
+export * from './components/PlanetOrbit';
+export * from './components/OrbitPath';
+export * from './components/MoonNode';
+export * from './components/AsteroidBelt';
+export const GALAXY_VERSION = "1.4.0";

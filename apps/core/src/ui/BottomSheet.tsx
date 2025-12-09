@@ -81,7 +81,7 @@ export const BottomSheet: React.FC = () => {
   return (
     <div 
       ref={sheetRef}
-      className={`bottom-sheet ${isOpen ? 'open' : 'closed'}`}
+      className={`bottom-sheet ${isOpen ? 'open' : 'closed'} ${isDragging ? 'dragging' : ''}`}
       style={{ transform: getTransform(), transition: isDragging ? 'none' : undefined }}
     >
       {/* Drag Handle */}

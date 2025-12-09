@@ -4,9 +4,15 @@ import * as THREE from 'three';
 
 interface StarFieldProps {
   count?: number;
+  color?: string;
+  size?: number;
 }
 
-export const StarField: React.FC<StarFieldProps> = ({ count = 5000 }) => {
+export const StarField: React.FC<StarFieldProps> = ({ 
+  count = 3000, 
+  color = '#ffffff',
+  size = 0.2 
+}) => {
   const mesh = useRef<THREE.InstancedMesh>(null);
 
   const particles = useMemo(() => {
@@ -29,8 +35,6 @@ export const StarField: React.FC<StarFieldProps> = ({ count = 5000 }) => {
     if (!mesh.current) return;
     
     particles.forEach((particle, i) => {
-      // Basic static placement for now, can add animation later
-      // Using simple spherical or boxed distribution
       const { xFactor, yFactor, zFactor } = particle;
       dummy.position.set(xFactor * 10, yFactor * 10, zFactor * 10);
       dummy.scale.setScalar(Math.random() * 0.5 + 0.5);
@@ -43,8 +47,8 @@ export const StarField: React.FC<StarFieldProps> = ({ count = 5000 }) => {
   return (
     <>
       <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-        <dodecahedronGeometry args={[0.2, 0]} />
-        <meshBasicMaterial color="#ffffff" />
+        <dodecahedronGeometry args={[size, 0]} />
+        <meshBasicMaterial color={color} />
       </instancedMesh>
     </>
   );
