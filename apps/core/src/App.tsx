@@ -76,7 +76,7 @@ function App() {
 
   // Check for updates on startup
   useEffect(() => {
-    useUpdateStore.getState().checkForUpdate();
+    useUpdateStore.getState().initialize();
   }, []);
 
   // Camera Animation Logic
