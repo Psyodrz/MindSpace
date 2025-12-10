@@ -1,7 +1,7 @@
 {
-  "latestVersion": "1.0.7",
+  "latestVersion": "1.0.8",
   "minSupportedVersion": "1.0.0",
-  "changelog": "Fixed update download loop and added progress feedback.",
+  "changelog": "Critical Fix: Resolved update installation loop. Please update immediately.",
   "apkUrl": "/mindspace.apk",
   "zipUrl": "/dist.zip"
 }

@@ -18,6 +18,10 @@ set /p commit_msg="Enter commit message (or press Enter for 'Update MindSpace'):
 if "%commit_msg%"=="" set commit_msg=Update MindSpace
 
 echo.
+echo Building Core App...
+call npm run build --workspace=apps/core
+
+echo.
 echo Adding all changes...
 git add .
 
