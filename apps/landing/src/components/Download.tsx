@@ -38,7 +38,7 @@ export default function Download() {
 
           {/* Download Button */}
           <motion.a
-            href="/mindspace.apk"
+            href="https://github.com/Psyodrz/MindSpace/releases/download/v1.0.9/mindspace.apk"
             download="MindSpace.apk"
             className="glow-button inline-flex items-center justify-center gap-3 px-12 py-5 rounded-full text-xl font-bold text-[#ECEDEB] group"
             whileHover={{ scale: 1.05 }}

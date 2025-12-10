@@ -55,7 +55,7 @@ export default function Hero() {
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             <motion.a
-              href="/mindspace.apk"
+              href="https://github.com/Psyodrz/MindSpace/releases/download/v1.0.9/mindspace.apk"
               download="MindSpace.apk"
               className="glow-button px-10 py-4 rounded-full text-lg font-semibold text-[#ECEDEB] inline-flex items-center justify-center gap-3 group"
               whileHover={{ scale: 1.05 }}
