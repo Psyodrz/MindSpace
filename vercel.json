@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": null,
-  "installCommand": "cd apps/landing && npm install",
-  "buildCommand": "cd apps/landing && npm run build",
+  "installCommand": "npm install --prefix apps/landing",
+  "buildCommand": "npm run build --prefix apps/landing",
   "outputDirectory": "apps/landing/dist"
 }
