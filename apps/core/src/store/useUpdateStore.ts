@@ -10,6 +10,7 @@ interface UpdateState {
   changelog: string | null;
   downloadProgress: number | null;
   isChecking: boolean;
+  isDownloading: boolean;
   
   initialize: () => void;
   checkForUpdate: () => Promise<void>;
@@ -39,6 +40,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
   changelog: null,
   downloadProgress: null,
   isChecking: false,
+  isDownloading: false,
 
   initialize: () => {
     // 1. Notify native side
@@ -88,8 +90,10 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
   },
 
   downloadAndInstall: async () => {
-     const { latestVersion } = get();
-     if (!latestVersion) return;
+     const { latestVersion, isDownloading } = get();
+     if (!latestVersion || isDownloading) return;
+
+     set({ isDownloading: true, downloadProgress: 0 });
 
      try {
        const UPDATE_URL = 'https://mindspace-app-pi.vercel.app/version.json';
@@ -111,6 +115,9 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
        }
      } catch (e) {
          console.error('Failed to download update:', e);
+         alert('Download failed. Please try again.');
+     } finally {
+         set({ isDownloading: false });
      }
   },
 

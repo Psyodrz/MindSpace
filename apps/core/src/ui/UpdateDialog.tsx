@@ -7,12 +7,12 @@ export const UpdateDialog: React.FC = () => {
     hasUpdate, 
     latestVersion, 
     changelog, 
-    updateAvailable, 
-    downloadProgress,
+    updateAvailable,
     showSuccess,
     resetUpdate,
     dismissSuccess,
-    downloadAndInstall
+    downloadAndInstall,
+    isDownloading
   } = useUpdateStore();
 
   // Show Success Message (High Priority)
@@ -42,8 +42,6 @@ export const UpdateDialog: React.FC = () => {
     window.location.reload();
   };
 
-  const isDownloading = downloadProgress !== null && downloadProgress < 100;
-
   return (
     <div className="update-overlay">
       <div className="update-dialog">
@@ -59,7 +57,7 @@ export const UpdateDialog: React.FC = () => {
             {updateAvailable 
               ? 'A new version has been downloaded. Restart to apply.' 
               : isDownloading 
-                ? 'Downloading update in background...'
+                ? 'Downloading update in background... Please wait.'
                 : 'A new version of MindSpace is available to download.'}
           </p>
           
@@ -72,7 +70,7 @@ export const UpdateDialog: React.FC = () => {
         </div>
         
         <div className="update-actions">
-          <button className="btn-secondary" onClick={resetUpdate}>
+          <button className="btn-secondary" onClick={resetUpdate} disabled={isDownloading}>
             {updateAvailable ? 'Later' : 'Hide'}
           </button>
           
@@ -80,9 +78,14 @@ export const UpdateDialog: React.FC = () => {
             <button className="btn-primary" onClick={handleRestart}>
               Restart Now
             </button>
-          ) : !isDownloading && (
-             <button className="btn-primary" onClick={downloadAndInstall}>
-              Download
+          ) : (
+             <button 
+               className="btn-primary" 
+               onClick={downloadAndInstall}
+               disabled={isDownloading}
+               style={{ opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'wait' : 'pointer' }}
+             >
+              {isDownloading ? 'Downloading...' : 'Download'}
             </button>
           )}
         </div>
