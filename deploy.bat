@@ -26,8 +26,11 @@ echo Adding all changes...
 git add .
 
 echo.
-echo Zipping build for OTA...
-powershell -command "Compress-Archive -Path apps/core/dist/* -DestinationPath apps/landing/public/dist.zip -Force"
+echo Zipping build for OTA (using tar)...
+cd apps/core/dist
+tar -a -c -f ../../../apps/landing/public/dist.zip *
+cd ../../..
+
 echo.
 echo Committing with message: %commit_msg%
 git commit -m "%commit_msg%"
