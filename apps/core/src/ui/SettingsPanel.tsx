@@ -74,13 +74,18 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
           </div>
         </div>
 
+
+
         {/* About Section */}
         <div className="settings-section">
           <h3>About</h3>
           <div className="about-content">
-            <p><strong>MindSpace</strong></p>
-            <p className="version">Version 1.0.0</p>
-            <p className="tagline">Your ideas, your universe.</p>
+            <p style={{ marginBottom: '12px', lineHeight: '1.5', color: 'rgba(255, 255, 255, 0.8)' }}>
+              MindSpace transforms your thoughts into a living solar system. Organize your ideas as orbiting planets in a 3D universe—designed to make thinking immersive, creative, and limitless.
+            </p>
+            <p className="tagline" style={{ marginTop: '16px', fontSize: '0.9rem', color: 'var(--theme-accent)' }}>
+              Designed and developed by Aditya Srivastava.
+            </p>
           </div>
         </div>
 

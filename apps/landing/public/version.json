@@ -1,7 +1,7 @@
 {
-  "latestVersion": "1.0.5",
+  "latestVersion": "1.0.6",
   "minSupportedVersion": "1.0.0",
-  "changelog": "Switched to MANUAL updates to fix loops. You must click 'Download' now.",
+  "changelog": "Added custom header icons and improved interactive onboarding tour.",
   "apkUrl": "/mindspace.apk",
   "zipUrl": "/dist.zip"
 }

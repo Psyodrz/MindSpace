@@ -77,10 +77,17 @@ const CameraTracker: React.FC<{ selectedNodeId: string | null }> = ({ selectedNo
 // Centered Sun at origin
 const CenteredSun: React.FC = () => {
   const texture = useTexture('/sun.jpg');
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((_, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta * 0.05;
+    }
+  });
   
   return (
     <group position={[0, 0, 0]}>
-      <mesh>
+      <mesh ref={meshRef}>
         <sphereGeometry args={[8, 64, 64]} />
         <meshBasicMaterial map={texture} toneMapped={false} />
       </mesh>

@@ -35,7 +35,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Mercury',
     label: 'Quick Notes',
     color: '#8C7853',
-    textureUrl: '/mercury.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg',
     description: 'Inbox, fleeting thoughts, quick captures',
     orbit: { radius: 15, speed: 4.8, eccentricity: 0.2, inclination: 7 },
     size: 1.2
@@ -45,7 +45,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Venus',
     label: 'Ideas',
     color: '#FFC649',
-    textureUrl: '/venus.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg',
     description: 'Brainstorming, creative ideas, experiments',
     orbit: { radius: 22, speed: 3.5, eccentricity: 0.01, inclination: 3.4 },
     size: 2
@@ -55,7 +55,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Earth',
     label: 'Current Work',
     color: '#4A90E2',
-    textureUrl: '/earth-day.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/1024px-The_Earth_seen_from_Apollo_17.jpg',
     description: 'Active projects, tasks in progress',
     orbit: { radius: 30, speed: 3.0, eccentricity: 0.02, inclination: 0 },
     size: 2
@@ -65,7 +65,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Mars',
     label: 'Future Plans',
     color: '#E27B58',
-    textureUrl: '/mars.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
     description: 'Upcoming projects, goals, aspirations',
     orbit: { radius: 40, speed: 2.4, eccentricity: 0.09, inclination: 1.85 },
     size: 1.5
@@ -84,7 +84,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Jupiter',
     label: 'Major Projects',
     color: '#C88B3A',
-    textureUrl: '/jupiter.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Jupiter.jpg/1024px-Jupiter.jpg',
     description: 'Large initiatives, complex work',
     orbit: { radius: 75, speed: 1.3, eccentricity: 0.05, inclination: 1.3 },
     size: 4
@@ -94,7 +94,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Saturn',
     label: 'Resources',
     color: '#FAD5A5',
-    textureUrl: '/moon.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1200px-Saturn_during_Equinox.jpg',
     description: 'References, documentation, knowledge base',
     orbit: { radius: 95, speed: 0.97, eccentricity: 0.06, inclination: 2.5 },
     size: 3.5
@@ -104,7 +104,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Uranus',
     label: 'Experiments',
     color: '#4FD0E0',
-    textureUrl: '/uranus.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg',
     description: 'Testing, prototypes, learning',
     orbit: { radius: 115, speed: 0.68, eccentricity: 0.05, inclination: 0.8 },
     size: 2.8
@@ -114,7 +114,7 @@ export const PLANET_CATEGORIES: PlanetCategory[] = [
     name: 'Neptune',
     label: 'Long-term Goals',
     color: '#4B70DD',
-    textureUrl: '/neptune.jpg',
+    textureUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Neptune_-_Voyager_2_%2829347980845%29_flatten_crop.jpg/1024px-Neptune_-_Voyager_2_%2829347980845%29_flatten_crop.jpg',
     description: 'Vision, dreams, distant objectives',
     orbit: { radius: 135, speed: 0.54, eccentricity: 0.01, inclination: 1.8 },
     size: 2.6

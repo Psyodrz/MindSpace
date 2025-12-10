@@ -36,6 +36,7 @@ interface AppState {
   setViewMode: (viewMode: ViewMode) => void;
   setHasSeenTutorial: (seen: boolean) => void;
   hydrateTextures: () => void;
+  initializeDefaultPlanets: () => void;
   
   // Linking
   startLinking: (id: NodeId) => void;
@@ -425,6 +426,36 @@ export const useStore = create<AppState>()(
         });
         
         return hasChanges ? { nodes: updatedNodes } : {};
+      }),
+      
+      // Initialize default planets for new users (called after tour)
+      initializeDefaultPlanets: () => set((state) => {
+        const hasDefaultPlanets = Object.keys(state.nodes).some(id => id.startsWith('default-planet-'));
+        if (hasDefaultPlanets) return {};
+
+        const defaultPlanets = createDefaultPlanets();
+        
+        // Merge with existing nodes (e.g. if user created one before finishing tour)
+        // Also ensure existing nodes have orbit stats
+        const currentNodes = { ...state.nodes };
+        let nextRadius = 140;
+        
+        Object.keys(currentNodes).forEach((id, index) => {
+          const node = currentNodes[id];
+          if (node.orbitRadius === undefined) {
+             currentNodes[id] = {
+              ...node,
+              orbitRadius: nextRadius,
+              orbitSpeed: 0.3 + Math.random() * 0.3,
+              orbitAngle: (index / Object.keys(currentNodes).length) * Math.PI * 2,
+              planetSize: 2 + Math.random() * 1.5,
+              isDefaultPlanet: false
+            };
+            nextRadius += 20;
+          }
+        });
+
+        return { nodes: { ...defaultPlanets, ...currentNodes } };
       }),
       
       // Export current state as JSON file

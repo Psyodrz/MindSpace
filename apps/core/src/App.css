@@ -124,6 +124,14 @@ html, body, #root {
   opacity: 1;
 }
 
+.view-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+  display: block;
+}
+
 /* Linking Indicator */
 .linking-indicator {
   position: fixed;

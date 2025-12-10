@@ -20,6 +20,7 @@ import { SettingsPanel } from './ui/SettingsPanel';
 import { ContextMenu } from './ui/ContextMenu';
 import { NavigationCarousel } from './ui/NavigationCarousel';
 import { UpdateDialog } from './ui/UpdateDialog';
+import { TutorialOverlay } from './ui/TutorialOverlay';
 import { useUpdateStore } from './store/useUpdateStore';
 import './App.css';
 
@@ -341,14 +342,16 @@ function App() {
           <button 
             className={`view-btn ${viewMode === 'galaxy' ? 'active' : ''}`}
             onClick={() => setViewMode('galaxy')}
+            title="Galaxy View"
           >
-            🌌
+            <img src="/icon-view-galaxy.png" alt="Galaxy" className="view-icon" />
           </button>
           <button 
             className={`view-btn ${viewMode === 'solar-system' ? 'active' : ''}`}
             onClick={() => setViewMode('solar-system')}
+            title="Solar System View"
           >
-            ☀️
+            <img src="/icon-view-solar.png" alt="Solar" className="view-icon" />
           </button>
         </div>
         
@@ -411,6 +414,9 @@ function App() {
           Undo
         </button>
       )}
+
+      {/* Onboarding Tour */}
+      <TutorialOverlay />
     </div>
   );
 }
