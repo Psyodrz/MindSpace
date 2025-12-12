@@ -96,7 +96,7 @@ export function DustField({
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+    <instancedMesh ref={meshRef as any} args={[undefined, undefined, count]}>
       <sphereGeometry args={[size, 4, 4]} />
       <meshBasicMaterial
         color={color}

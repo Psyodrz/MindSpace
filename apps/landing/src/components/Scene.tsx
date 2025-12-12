@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Stars, Float, Sphere, MeshDistortMaterial } from '@react-three/drei';
+import { Stars, Float, MeshDistortMaterial } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
@@ -40,7 +40,7 @@ function Sun() {
   return (
     <group position={[0, 0, -50]}>
       {/* Core */}
-      <mesh ref={meshRef}>
+      <mesh ref={meshRef as any}>
         <sphereGeometry args={[8, 64, 64]} />
         <meshStandardMaterial
           color="#ff6b00"
@@ -50,7 +50,7 @@ function Sun() {
         />
       </mesh>
       {/* Glow layers */}
-      <mesh ref={glowRef} scale={1.5}>
+      <mesh ref={glowRef as any} scale={1.5}>
         <sphereGeometry args={[8, 32, 32]} />
         <meshBasicMaterial color="#ff8800" transparent opacity={0.15} side={THREE.BackSide} />
       </mesh>
@@ -79,7 +79,7 @@ function OrbitingPlanet({ orbitRadius, size, color, speed, initialAngle = 0, emi
   const planetRef = useRef<THREE.Mesh>(null);
   const angle = useRef(initialAngle);
 
-  useFrame((state) => {
+  useFrame(() => {
     angle.current += speed;
     if (groupRef.current) {
       groupRef.current.position.x = Math.cos(angle.current) * orbitRadius;
@@ -92,9 +92,9 @@ function OrbitingPlanet({ orbitRadius, size, color, speed, initialAngle = 0, emi
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef as any}>
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-        <mesh ref={planetRef}>
+        <mesh ref={planetRef as any}>
           <sphereGeometry args={[size, 32, 32]} />
           <MeshDistortMaterial
             color={color}
@@ -154,7 +154,7 @@ function AsteroidBelt() {
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+    <instancedMesh ref={meshRef as any} args={[undefined, undefined, count]}>
       <dodecahedronGeometry args={[1, 0]} />
       <meshStandardMaterial color="#666666" roughness={0.8} metalness={0.2} />
     </instancedMesh>
@@ -190,7 +190,7 @@ function SpaceDust() {
   }, [particles, dummy]);
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+    <instancedMesh ref={meshRef as any} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 6, 6]} />
       <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
     </instancedMesh>
@@ -320,7 +320,9 @@ export default function Scene() {
           />
           <ChromaticAberration
             blendFunction={BlendFunction.NORMAL}
-            offset={new THREE.Vector2(0.0005, 0.0005)}
+            offset={new THREE.Vector2(0.0005, 0.0005) as any}
+            radialModulation={false}
+            modulationOffset={0}
           />
         </EffectComposer>
       </Canvas>

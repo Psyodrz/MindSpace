@@ -92,8 +92,8 @@ export function Planet({
   });
 
   return (
-    <group ref={groupRef}>
-      <mesh ref={meshRef} geometry={geometry}>
+    <group ref={groupRef as any}>
+      <mesh ref={meshRef as any} geometry={geometry as any}>
         <meshStandardMaterial
           color={color}
           emissive={emissive || color}
