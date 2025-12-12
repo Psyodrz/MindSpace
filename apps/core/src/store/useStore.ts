@@ -122,17 +122,36 @@ const createDefaultPlanets = (): Record<string, MindNode> => {
 
 const STORAGE_KEY = 'mindspace-storage';
 
-// Custom IndexedDB storage
+// Custom IndexedDB storage with error handling (#6 fix)
 const idbStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    const value = await get<string>(name);
-    return value ?? null;
+    try {
+      const value = await get<string>(name);
+      return value ?? null;
+    } catch (e) {
+      console.warn('IndexedDB getItem failed, falling back to null:', e);
+      return null;
+    }
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    await set(name, value);
+    try {
+      await set(name, value);
+    } catch (e) {
+      console.error('IndexedDB setItem failed:', e);
+      // Fallback: try localStorage as backup
+      try {
+        localStorage.setItem(name, value);
+      } catch (lsError) {
+        console.error('localStorage fallback also failed:', lsError);
+      }
+    }
   },
   removeItem: async (name: string): Promise<void> => {
-    await del(name);
+    try {
+      await del(name);
+    } catch (e) {
+      console.warn('IndexedDB removeItem failed:', e);
+    }
   },
 };
 
@@ -488,18 +507,25 @@ export const useStore = create<AppState>()(
         }
       },
       
-      // Reset all data
+      // Reset all data (#5 fix: stronger confirmation)
       resetData: async () => {
-        if (confirm('This will delete all your data. Are you sure?')) {
-          await clearAllData(STORAGE_KEY);
-          set({
-            nodes: {},
-            mode: 'GALAXY',
-            activeNodeId: null,
-            hasSeenTutorial: false,
-            linkingNodeId: null
-          });
+        // Require user to type DELETE for confirmation
+        const userInput = prompt('This will permanently delete ALL your data.\\n\\nType DELETE to confirm:');
+        if (userInput !== 'DELETE') {
+          if (userInput !== null) {
+            alert('Data reset cancelled. You must type DELETE exactly to confirm.');
+          }
+          return;
         }
+        
+        await clearAllData(STORAGE_KEY);
+        set({
+          nodes: {},
+          mode: 'GALAXY',
+          activeNodeId: null,
+          hasSeenTutorial: false,
+          linkingNodeId: null
+        });
       }
     }),
     {

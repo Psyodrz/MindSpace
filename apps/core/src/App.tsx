@@ -171,6 +171,15 @@ function App() {
     }
   }, []);
 
+  // #7 fix: Cleanup timer on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+      }
+    };
+  }, []);
+
   // Handle node click (select, complete link, or double-tap to edit)
   const handleNodeClick = useCallback((nodeId: string, e: any) => {
     e.stopPropagation();

@@ -12,7 +12,8 @@ export const UpdateDialog: React.FC = () => {
     resetUpdate,
     dismissSuccess,
     downloadAndInstall,
-    isDownloading
+    isDownloading,
+    downloadProgress // #8 fix: Get progress value
   } = useUpdateStore();
 
   // Show Success Message (High Priority)
@@ -60,6 +61,17 @@ export const UpdateDialog: React.FC = () => {
                 ? 'Downloading update in background... Please wait.'
                 : 'A new version of MindSpace is available to download.'}
           </p>
+          
+          {/* #8 fix: Show progress bar during download */}
+          {isDownloading && downloadProgress !== null && (
+            <div className="progress-container">
+              <div 
+                className="progress-bar" 
+                style={{ width: `${Math.min(downloadProgress, 100)}%` }}
+              />
+              <span className="progress-text">{Math.round(downloadProgress)}%</span>
+            </div>
+          )}
           
           {changelog && (
             <div className="changelog-box">
