@@ -38,7 +38,7 @@ export default function Download() {
 
           {/* Download Button */}
           <motion.a
-            href="https://github.com/Psyodrz/MindSpace/releases/download/v1.0.9/mindspace.apk"
+            href="/mindspace.apk"
             download="MindSpace.apk"
             className="glow-button inline-flex items-center justify-center gap-3 px-12 py-5 rounded-full text-xl font-bold text-[#ECEDEB] group"
             whileHover={{ scale: 1.05 }}
@@ -57,7 +57,7 @@ export default function Download() {
             transition={{ delay: 0.5 }}
             className="mt-6 text-sm text-[#6B7280]"
           >
-            v1.0.9 • Android 8.0+
+            v1.0.10 • Android 8.0+
           </motion.p>
 
           {/* Stats */}
