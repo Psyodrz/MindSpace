@@ -2,6 +2,6 @@
   "latestVersion": "1.0.10",
   "minSupportedVersion": "1.0.0",
   "changelog": "Fix TypeScript errors in landing page Three.js components",
-  "apkUrl": "/mindspace.apk",
-  "zipUrl": "/dist.zip"
+  "apkUrl": "https://github.com/Psyodrz/MindSpace/releases/download/v1.0.10/mindspace.apk",
+  "zipUrl": "https://github.com/Psyodrz/MindSpace/releases/download/v1.0.10/dist.zip"
 }

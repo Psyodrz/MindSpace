@@ -101,7 +101,10 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
        const data = await response.json();
        
        if (data.zipUrl) {
-           const zipUrl = new URL(data.zipUrl, UPDATE_URL).toString();
+           // Support both absolute URLs and relative paths
+           const zipUrl = data.zipUrl.startsWith('http') 
+               ? data.zipUrl 
+               : new URL(data.zipUrl, UPDATE_URL).toString();
            
            const version = await CapacitorUpdater.download({
                url: zipUrl,
